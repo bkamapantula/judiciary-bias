@@ -33,5 +33,13 @@ def keys_files():
         df.to_sql(file_mapping['table'], engine, if_exists='append', index=False)
 
 
+def judges_file():
+    """judges table."""
+    judges = pd.read_csv('judges_clean.csv')
+    judges.to_sql('judges', engine, if_exists='append', index=False)
+
+
 if __name__ == '__main__':
     keys_files()
+    judges_file()
+
