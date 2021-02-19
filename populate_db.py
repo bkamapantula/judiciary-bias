@@ -1,5 +1,6 @@
 import pandas as pd
 from sqlalchemy import create_engine
+import tqdm
 
 engine_str = 'postgresql://{user}:{password}@{s}/{db}'.format(
     user='ENTER USERNAME',
@@ -39,7 +40,34 @@ def judges_file():
     judges.to_sql('judges', engine, if_exists='append', index=False)
 
 
+def acts_sections_file():
+    """acts and sections table."""
+    for df in tqdm.tqdm(pd.read_csv('acts_sections.csv', chunksize=1000000), total=77):
+        df.to_sql('acts_sections', engine, if_exists='append', index=False)
+
+
+def cases_files():
+    """cases by year."""
+    # pass
+    files = [
+        'cases-unzipped/cases_2010.csv',
+        'cases-unzipped/cases_2011.csv',
+        'cases-unzipped/cases_2012.csv',
+        'cases-unzipped/cases_2013.csv',
+        'cases-unzipped/cases_2014.csv',
+        'cases-unzipped/cases_2015.csv',
+        'cases-unzipped/cases_2016.csv',
+        'cases-unzipped/cases_2017.csv',
+        'cases-unzipped/cases_2018.csv'
+    ]
+    for f in tqdm.tqdm(files):
+        for df in pd.read_csv(f, chunksize=10000):
+            df.to_sql('cases', engine, if_exists='append', index=False)
+
+
 if __name__ == '__main__':
     keys_files()
     judges_file()
+    acts_sections_file()
+    cases_files()
 
